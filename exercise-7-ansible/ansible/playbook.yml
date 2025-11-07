@@ -2,12 +2,19 @@
 - name: Install and configure NGINX
   hosts: all
   become: yes
+  gather_facts: no
+
+  pre_tasks:
+    - name: Wait for any unattended-upgrades to finish
+      raw: "while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do echo 'Waiting for other software managers to finish...'; sleep 5; done"
+      changed_when: false
+
   tasks:
     - name: Install NGINX
       apt:
         name: nginx
         state: present
-        update_cache: yes
+        update_cache: no
 
     - name: Start NGINX service
       service:

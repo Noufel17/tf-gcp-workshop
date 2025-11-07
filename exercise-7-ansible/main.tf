@@ -22,4 +22,31 @@ module "my_gce_instance" {
   ssh_user      = var.ssh_user
   ssh_public_key_path = var.ssh_public_key_path
   ssh_private_key_path = var.ssh_private_key_path
+
+  depends_on = [
+    module.my_network.ssh_rule_id
+  ]
+}
+
+resource "local_file" "ansible_inventory" {
+  # This content block creates the inventory in the correct YAML format.
+  content = templatefile("./ansible/inventory.tpl", {
+    vm_ip                  = module.my_gce_instance.vm_external_ip
+    ssh_user               = var.ssh_user
+    ssh_private_key_file   = var.ssh_private_key_path
+  })
+
+  filename = "./ansible/inventory.yml"
+}
+
+resource "null_resource" "ansible_trigger" {
+
+  depends_on = [
+    module.my_gce_instance,
+    local_file.ansible_inventory
+  ]
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i ./ansible/inventory.yml ./ansible/playbook.yml"
+  }
 }
