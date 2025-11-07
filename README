@@ -1,0 +1,130 @@
+# Hands-On Guide: Infrastructure as Code with Terraform and GCP
+
+![Terraform](https://img.shields.io/badge/Terraform-v1.7+-blueviolet)
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-GCP-blue)
+![Ansible](https://img.shields.io/badge/Ansible-2.12+-red)
+![Status](https://img.shields.io/badge/status-ready_for_workshop-green)
+
+Welcome to the official repository for the "Hands-On Guide to IaC with Terraform and GCP" workshop! This repository contains all the code, instructions, and examples you will need to successfully complete the hands-on lab sessions [107].
+
+The objective of this workshop is to build and configure a complete cloud environment on Google Cloud Platform from scratch, using only code [107].
+
+## 📚 Table of Contents
+
+- [Prerequisites](#-prerequisites)
+- [Initial Setup](#-initial-setup)
+- [Repository Structure](#-repository-structure)
+- [Workshop Exercises](#-workshop-exercises)
+- [Troubleshooting Common Issues](#-troubleshooting-common-issues)
+- [Cleanup](#-cleanup)
+
+## 🛠️ Prerequisites
+
+Before we begin, please ensure you have the following installed on your machine.
+
+### All Operating Systems:
+-   **A Code Editor:** [Visual Studio Code](https://code.visualstudio.com/) is highly recommended.
+-   **A Google Account:** To access the Google Cloud Platform project.
+
+### For macOS / Linux Users:
+1.  **Terraform:** [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
+2.  **Google Cloud SDK:** [Install the gcloud CLI](https://cloud.google.com/sdk/docs/install).
+3.  **Ansible (for Exercise 7):**
+    ```
+    # On macOS
+    brew install ansible
+    # On Debian/Ubuntu
+    sudo apt-get update && sudo apt-get install -y ansible
+    ```
+
+### For Windows Users (Important):
+Ansible and Terraform work best in a Linux environment. The recommended approach is to use the **Windows Subsystem for Linux (WSL)**.
+
+1.  **Install WSL:** Open PowerShell as an Administrator and run:
+    ```
+    wsl --install
+    ```
+    (You may need to restart your computer).
+
+2.  **Open Ubuntu:** From your Start Menu, open the "Ubuntu" application. All subsequent commands in this workshop should be run from within this Ubuntu terminal.
+
+3.  **Install Tools inside WSL/Ubuntu:**
+    ```
+    # Install Terraform
+    sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+    wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+    sudo apt-get update && sudo apt-get install terraform
+
+    # Install gcloud and Ansible
+    sudo apt-get install -y google-cloud-sdk ansible
+    ```
+
+## 🚀 Initial Setup
+
+Once the prerequisites are installed, you must authenticate with Google Cloud. Run these commands in your terminal (or your WSL/Ubuntu terminal if on Windows).
+
+1.  **Log in to your Google Account:**
+    ```
+    gcloud auth login
+    ```
+
+2.  **Set up Application Default Credentials for Terraform:**
+    ```
+    gcloud auth application-default login
+    ```
+
+3.  **Configure the Workshop Project ID:**
+    *(Replace `<YOUR_PROJECT_ID>` with the ID provided by the instructor).*
+    ```
+    gcloud config set project <YOUR_PROJECT_ID>
+    ```
+
+## 📂 Repository Structure
+
+This repository is organized into directories, where each folder represents the complete state of our project at the end of that exercise. This allows you to follow along or catch up easily.
+
+```
+.
+├── exercise-0-setup/
+├── exercise-1-init/
+├── ...
+└── exercise-8-cleanup/
+```
+
+## 📝 Workshop Exercises
+
+| Exercise                            | Directory                                   | Key Concepts Covered                                                       |
+| ----------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------- |
+| **1. First Init**                   | [`exercise-1-init/`](./exercise-1-init/)    | `terraform init`, provider setup, `.terraform` directory, lock file.       |
+| **2. Variables & Apply**            | [`exercise-2-apply/`](./exercise-2-apply/)  | `variables.tf`, `outputs.tf`, `terraform.tfvars`, `plan` & `apply`.        |
+| **3. Subnet & Firewall**            | [`exercise-3-network/`](./exercise-3-network/) | Resource dependencies, creating a subnet and firewall rules.               |
+| **4. Virtual Machine**              | [`exercise-4-vm/`](./exercise-4-vm/)        | `google_compute_instance`, boot disks, network interfaces, tags.           |
+| **5. Modules**                      | [`exercise-5-modules/`](./exercise-5-modules/) | Refactoring into a reusable local module, module `source` and `outputs`.   |
+| **6. State Management**             | (No new code)                               | The `terraform.tfstate` file, `terraform state list`, `state show`.        |
+| **7. Ansible Provisioning**         | [`exercise-7-ansible/`](./exercise-7-ansible/) | `ssh-keygen`, VM metadata, `local-exec` provisioner, `ansible.cfg`.        |
+| **8. Cleanup**                      | (No new code)                               | Using `terraform destroy` to tear down all infrastructure.                 |
+
+## ⚠️ Troubleshooting Common Issues
+
+1.  **Permission Denied / Unprotected Private Key (SSH Error):**
+    -   **Cause:** You are running commands from the Windows filesystem (`/mnt/c/...`) within WSL. Windows doesn't support Linux file permissions, so `chmod` has no effect.
+    -   **Solution:** Move your entire project folder into your WSL home directory (`cd ~`) and work from there. `chmod 600 <your-key>` will then work correctly.
+
+2.  **Ansible "UNREACHABLE" or "Connection refused":**
+    -   **Cause:** This is a race condition. The Ansible provisioner runs before the VM's SSH service is fully ready or the firewall rule has propagated.
+    -   **Solution:** Add a `connection` block to your `local-exec` provisioner in Terraform. This tells Terraform to wait for SSH to be available before running the command.
+
+## 🧹 Cleanup
+
+At the end of the workshop, it is **critical** to destroy all created resources to avoid incurring costs. Navigate to your final exercise directory and run:
+
+```
+terraform destroy
+```
+
+Answer `yes` when prompted to confirm the deletion.
+
+---
+*Workshop content created for educational purposes. Last updated: November 2025.*
+```

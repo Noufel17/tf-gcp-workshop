@@ -1,0 +1,45 @@
+# Terraform-specific files to ignore
+
+# Local .terraform directories
+# These directories contain the provider plugins and are downloaded by `terraform init`.
+**/.terraform/
+
+# State files
+# The state file is the most critical file to ignore. It can contain sensitive data
+# and should be managed with a remote backend in production, not in version control.
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+# These are created if Terraform crashes and are not needed in the repository.
+crash.log
+crash.*.log
+
+# Variable files
+# Exclude all .tfvars files as they often contain sensitive data like secrets or
+# environment-specific values. The main `terraform.tfvars` is a common place
+# for secrets.
+*.tfvars
+*.tfvars.json
+
+# Override files
+# These are used for local overrides and should not be shared.
+*.override.tf
+*.override.tf.json
+*tfplan*
+
+# Terraform CLI configuration files
+# These are user-specific and should not be in the repository.
+.terraformrc
+terraform.rc
+
+# --- General files to ignore ---
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+keys/

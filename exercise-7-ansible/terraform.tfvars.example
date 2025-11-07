@@ -1,0 +1,26 @@
+# This is an example variables file.
+# To use it, rename this file to "terraform.tfvars" and fill in the required values.
+#
+# The terraform.tfvars file should NOT be committed to version control as it may
+# contain sensitive information.
+
+# -----------------------------------------------------------------------------
+# REQUIRED VALUES
+# -----------------------------------------------------------------------------
+
+# The Google Cloud Project ID to deploy resources into.
+# This value will be provided by the workshop instructor.
+project_id = "ENTER_YOUR_PROJECT_ID_HERE"
+
+
+# -----------------------------------------------------------------------------
+# OPTIONAL VALUES
+# -----------------------------------------------------------------------------
+
+# The GCP region where the resources will be created.
+# If you uncomment this, it will override the default value in variables.tf.
+# region = "us-east1"
+
+# The username to create on the VM for SSH access.
+# The default is "workshop-user".
+# ssh_user = "my-custom-user"
