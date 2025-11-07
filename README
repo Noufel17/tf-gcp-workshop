@@ -79,7 +79,7 @@ text
 ├── exercise-1-init/
 ├── exercise-2-apply/
 ├── ...
-└── exercise-8-cleanup/
+└── exercise-7-ansible/
 📝 Workshop Exercises
 Exercise	Directory	Key Concepts Covered
 1. First Init	exercise-1-init/	terraform init, provider setup, lock file.
